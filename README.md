@@ -12,3 +12,15 @@
 ### Demo
 https://user-images.githubusercontent.com/61587804/233728190-69e0f9eb-0d11-4356-ae21-e491664dc7e7.mp4
 
+
+
+## Task 2
+### Requirement
+  - When creating new product, Add it immediately to All products page
+
+### Demo
+
+  
+
+https://user-images.githubusercontent.com/61587804/234109212-18c64e70-8021-45e0-812a-e4bd36c4b385.mp4
+
