@@ -1,0 +1,79 @@
+﻿@model productsHub.Models.Product
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*<input type="button" onclick="AddProduct()"  value="Create" class="btn btn-primary" />*@
+                <input type="submit"  value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+@*
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js" integrity="sha512-k8WL9L2jG8KyG3pCJA4mHMdg2YSoWrdB5QNqLIhROv69udwp87WvbqzbsiAL65wy7T9jHU7rAoePr1ToPBc0Lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var connection =
+            new signalR.HubConnectionBuilder().withUrl("/myProductsHub").build();
+        //2- Start connection with hub server==> Clients
+        connection.start().then(function () {
+            console.log("Connection Success!!");
+        });//online client on hub
+
+        //3- send server
+        function AddProduct() {
+            var name = document.getElementById("Name").value;
+            var description = document.getElementById("Description").value;
+            var price = document.getElementById("Price").value;
+            var quantity = document.getElementById("Quantity").value;
+            var image = document.getElementById("Image").value;
+            var prod = { "Name": name, "Description": description, "Price": price, "Quantity": quantity, "Image": image };
+            connection.invoke("NewProduct", prod);
+        }
+    </script>
+}*@

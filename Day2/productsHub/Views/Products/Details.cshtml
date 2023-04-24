@@ -1,0 +1,135 @@
+﻿@model productsHub.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+    var id = Model.Id;
+    var comments = ViewBag.comments;
+    var img = Model.Image;
+    var q = Model.Quantity;
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2 ">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            <label id="id">@id</label>
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2 ">
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+        <dd class="col-sm-10">
+            <label id="quantity">@q</label>
+        </dd>
+        <dt class="col-sm-2 ">
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+        <dd class = "col-sm-10">
+            <br />
+            <img width="200px" height="200px" src="@img">
+            <br />
+        </dd>
+
+        <dt class="col-sm-2 ">
+            <label for="comment">Add Comment: </label>
+        </dt>
+        <dd class="col-sm-10">
+            <input class="form-control" type="text" id="name" placeholder="ur Name" /> <br />
+            <input class="form-control" type="text" id="newComment" placeholder="ur comment" /> <br />
+            <input class="btn btn-outline-info" type="button" value="Add Comment" onclick="AddComment()">
+        </dd>
+
+        <dt class="col-sm-2 ">
+        </dt>
+        <dd class="col-sm-10">
+            <input class="btn btn-outline-success" type="button" value="Buy" onclick="Buy()">
+        </dd>
+
+        <dt class="col-sm-2 ">
+            <label>Comments</label>
+        </dt>
+        <dd class="col-sm-10">
+            <ul id="commentsList">
+                @foreach (var comment in comments)
+                {
+                    <li>@comment.UserName :  @comment.Text</li>
+                }
+            </ul>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+@section Scripts{
+    <!--SignalR Client  "JS"-->
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script>
+        //1- Declare Hub
+        var connection = new signalR.HubConnectionBuilder().withUrl("/myProductsHub").build();
+        
+        //2- Start connection with hub server==> Clients
+        connection.start().then(function () {
+            console.log("Connection Success!!");
+        });//online client on hub
+
+        //3- send info to hub server
+        function Buy() {
+            var id = parseInt(document.getElementById("id").textContent);
+            var quantity = parseInt(document.getElementById("quantity").textContent);
+           
+            connection.invoke("buy", id, quantity);
+        }
+
+        function AddComment() {
+            var id = parseInt(document.getElementById("id").textContent);
+            var name = document.getElementById("name").value;
+            var comment = document.getElementById("newComment").value;
+
+            //RPC from server
+            connection.invoke("WriteComment", name, comment, id);
+        }
+
+        //4- recive info come from hub server
+        connection.on("NotifyNewQuantity", function (prodId, quantity) {
+            var id = parseInt(document.getElementById("id").textContent);
+            if (id == prodId) {
+                document.getElementById("quantity").textContent = quantity;
+            }
+        });
+
+        connection.on("NotifyNewComment", function (nm, cmnt, prodId) {
+            var id = parseInt(document.getElementById("id").textContent);
+            if(id == prodId){
+                document.getElementById("commentsList").innerHTML +=
+                    "<li>" + nm + " : " + cmnt + "</li>";
+            }
+        });
+    </script>
+}

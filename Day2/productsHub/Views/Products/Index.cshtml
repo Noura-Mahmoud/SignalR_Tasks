@@ -1,0 +1,107 @@
+﻿@model IEnumerable<productsHub.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                    @{
+                        var img = item.Image;
+                    }
+                    <img width="50px" height="50px" src="@img">
+                @*@Html.DisplayFor(modelItem => item.Image)*@
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js" integrity="sha512-k8WL9L2jG8KyG3pCJA4mHMdg2YSoWrdB5QNqLIhROv69udwp87WvbqzbsiAL65wy7T9jHU7rAoePr1ToPBc0Lw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        var connection =
+            new signalR.HubConnectionBuilder().withUrl("/myProductsHub").build();
+        //2- Start connection with hub server==> Clients
+        connection.start().then(function () {
+            console.log("Connection Success!!");
+        });//online client on hub
+
+        //4- recive
+        connection.on("NotifyNewProduct", function (product) {
+            console.log("product");
+            console.log(product);
+            // Create a new table row with the product data
+            var newRow = $("<tr>");
+            newRow.append($("<td>").text(product.name));
+            newRow.append($("<td>").text(product.description));
+            newRow.append($("<td>").text(product.price));
+            newRow.append($("<td>").text(product.quantity));
+            newRow.append($("<td>").append($("<img  width='50px' height=50px'>").attr("src", product.image)));
+
+            var actions = $("<td>");
+            var editLink = $("<a>").attr("href", "/Products/Edit/" + product.id).text("Edit");
+            var detailsLink = $("<a>").attr("href", "/Products/Details/" + product.id).text("Details");
+            var deleteLink = $("<a>").attr("href", "/Products/Delete/" + product.id).text("Delete");
+            actions.append(editLink, " | ", detailsLink, " | ", deleteLink);
+            newRow.append(actions);
+            //newRow.append($("<td>").(
+            //    $("<a>").attr("href", "/Products/Edit/" + product.id).text("Edit"),
+            //    " | ",
+            //    $("<a>").attr("href", "/Products/Details/" + product.id).text("Details"),
+            //    " | ",
+            //    $("<a>").attr("href", "/Products/Delete/" + product.id).text("Delete")
+            //);
+
+            // Add the new row to the table
+            $("table tbody").append(newRow);
+        });
+    </script>
+}
+
