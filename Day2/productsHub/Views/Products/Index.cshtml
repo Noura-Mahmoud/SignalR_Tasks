@@ -75,8 +75,6 @@
 
         //4- recive
         connection.on("NotifyNewProduct", function (product) {
-            console.log("product");
-            console.log(product);
             // Create a new table row with the product data
             var newRow = $("<tr>");
             newRow.append($("<td>").text(product.name));
@@ -91,14 +89,6 @@
             var deleteLink = $("<a>").attr("href", "/Products/Delete/" + product.id).text("Delete");
             actions.append(editLink, " | ", detailsLink, " | ", deleteLink);
             newRow.append(actions);
-            //newRow.append($("<td>").(
-            //    $("<a>").attr("href", "/Products/Edit/" + product.id).text("Edit"),
-            //    " | ",
-            //    $("<a>").attr("href", "/Products/Details/" + product.id).text("Details"),
-            //    " | ",
-            //    $("<a>").attr("href", "/Products/Delete/" + product.id).text("Delete")
-            //);
-
             // Add the new row to the table
             $("table tbody").append(newRow);
         });
